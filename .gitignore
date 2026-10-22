@@ -33,3 +33,7 @@ learn-claude-code-main/
 
 # Nested repo backup
 MVAgent-Frontend/.git_backup/
+
+# Personal notes (local only)
+面试手册.md
+项目文档2.0.md
