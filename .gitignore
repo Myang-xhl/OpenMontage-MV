@@ -1,0 +1,35 @@
+# Generated production workspaces (regenerable)
+projects/
+
+# User content
+music_library/*.mp3
+music_library/*.wav
+music_library/*.flac
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Env / secrets
+.env
+
+# Backlot runtime
+.backlot/
+
+# IDE
+.idea/
+
+# Local sessions
+.studio/
+
+# Frontend deps
+MVAgent-Frontend/node_modules/
+MVAgent-Frontend/dist/
+
+# Reference repo
+learn-claude-code-main/
+
+
+# Nested repo backup
+MVAgent-Frontend/.git_backup/

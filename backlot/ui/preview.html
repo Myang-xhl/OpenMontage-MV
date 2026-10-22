@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Backlot — Preview</title>
+<link rel="stylesheet" href="/ui/board.css">
+<style>
+  .pv { display: flex; flex-direction: column; height: 100vh; min-height: 0; }
+  .pv-bar {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 16px; border-bottom: 1px solid var(--border-soft);
+    background: var(--surface);
+  }
+  .pv-bar h1 { font-size: calc(14px * var(--fs-scale)); margin: 0; }
+  .pv-bar select {
+    background: var(--surface-2); color: var(--text); border: 1px solid var(--border);
+    border-radius: 6px; padding: 4px 8px; font-family: var(--mono);
+    font-size: calc(11px * var(--fs-scale));
+  }
+  .pv-back {
+    font-family: var(--mono); font-size: calc(11px * var(--fs-scale));
+    color: var(--text-3); text-decoration: none;
+  }
+  .pv-back:hover { color: var(--text-2); }
+  .pv-stage {
+    flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center;
+    background: #0a0a0c; padding: 14px; position: relative;
+  }
+  .pv-frame-box { position: relative; height: 100%; }
+  .pv-frame-box iframe {
+    height: 100%; border: 1px solid var(--border); border-radius: 8px;
+    background: #000; display: block;
+  }
+  .pv-empty { color: var(--text-3); font-family: var(--mono); text-align: center; }
+  .pv-controls {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 16px; border-top: 1px solid var(--border-soft);
+    background: var(--surface);
+  }
+  .pv-btn {
+    background: var(--amber-dim); color: var(--amber); border: 1px solid var(--amber);
+    border-radius: 6px; padding: 6px 16px; cursor: pointer;
+    font-family: var(--mono); font-size: calc(12px * var(--fs-scale));
+  }
+  .pv-btn:disabled { opacity: .4; cursor: default; }
+  .pv-time { font-family: var(--mono); font-size: calc(11px * var(--fs-scale)); color: var(--text-2); min-width: 96px; }
+  #scrub { flex: 1; accent-color: var(--amber); }
+  .pv-note { font-family: var(--mono); font-size: calc(10px * var(--fs-scale)); color: var(--text-3); }
+</style>
+</head>
+<body>
+<div class="pv">
+  <header class="pv-bar">
+    <a class="pv-back" href="/studio">← Studio</a>
+    <h1 id="title">Preview</h1>
+    <select id="compSelect" style="display:none"></select>
+    <div class="spacer" style="flex:1"></div>
+    <span class="pv-note" id="metaNote"></span>
+  </header>
+  <div class="pv-stage">
+    <div class="pv-frame-box" id="frameBox" style="display:none">
+      <iframe id="compFrame" title="composition preview"></iframe>
+    </div>
+    <div class="pv-empty" id="emptyNote">Loading compositions…</div>
+  </div>
+  <div class="pv-controls">
+    <button class="pv-btn" id="playBtn" disabled>▶ Play</button>
+    <span class="pv-time" id="timeLabel">0.0 / 0.0s</span>
+    <input type="range" id="scrub" min="0" max="1000" value="0" disabled>
+  </div>
+</div>
+<script type="module" src="/ui/preview.js"></script>
+</body>
+</html>

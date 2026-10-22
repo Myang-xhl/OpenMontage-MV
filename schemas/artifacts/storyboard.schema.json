@@ -1,0 +1,288 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "openmontage/artifacts/storyboard",
+  "title": "MV分镜脚本",
+  "description": "基于ASS歌词文件生成的MV分镜脚本结构化数据，用于Seedance AI视频生成。底稿为 .agents/skills/mv-storyboard/assets/storyboard-schema.json，增补 OpenMontage 惯例字段（M8：meta.provenance、shots[].assetPath、shots[].referenceImages）并将原文字约束落为硬约束（shots maxItems 23、duration 整数 4-15 秒）。",
+  "type": "object",
+  "required": ["meta", "characters", "shots"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "description": "分镜脚本元信息",
+      "required": ["songName", "assFile", "songStyle", "emotionalTone", "duration", "shotCount", "narrativeStyle", "storyline", "visualTone"],
+      "properties": {
+        "songName": {
+          "type": "string",
+          "description": "歌曲名称（取自ASS文件名或用户指定）"
+        },
+        "assFile": {
+          "type": "string",
+          "description": "ASS源文件路径"
+        },
+        "songStyle": {
+          "type": "string",
+          "description": "歌曲风格，如：抒情情歌、快节奏流行、古风中国风、校园青春、街头嘻哈、慢板民谣等",
+          "examples": ["抒情情歌", "快节奏流行", "古风/中国风", "校园青春", "街头/嘻哈/R&B", "慢板抒情/民谣"]
+        },
+        "emotionalTone": {
+          "type": "string",
+          "description": "情感基调，如：甜蜜、伤感、怀念、坚定、忧郁等",
+          "examples": ["甜蜜温馨", "伤感怀念", "热血激昂", "忧郁孤独"]
+        },
+        "language": {
+          "type": "string",
+          "description": "歌曲语言",
+          "enum": ["中文", "韩文", "英文", "日文", "混合"]
+        },
+        "duration": {
+          "type": "number",
+          "description": "总时长（秒）"
+        },
+        "tempo": {
+          "type": "string",
+          "description": "节奏类型",
+          "enum": ["慢板", "中速", "快节奏"]
+        },
+        "shotCount": {
+          "type": "integer",
+          "description": "分镜总数",
+          "minimum": 1,
+          "maximum": 23
+        },
+        "narrativeStyle": {
+          "type": "string",
+          "description": "叙事风格",
+          "enum": ["线性剧情叙事", "蒙太奇快切", "意境叙事", "青春成长叙事", "都市街头风格", "情感氛围叙事", "通用情感叙事"]
+        },
+        "storyline": {
+          "type": "string",
+          "description": "叙事主线（一句话概括）"
+        },
+        "visualTone": {
+          "type": "string",
+          "description": "视觉基调（色调、氛围方向）"
+        },
+        "generateTime": {
+          "type": "string",
+          "description": "生成时间（ISO 8601格式）",
+          "format": "date-time"
+        },
+        "provenance": {
+          "type": "object",
+          "description": "复现性信息（OpenMontage 惯例，M8 增补）",
+          "properties": {
+            "generated_by": { "type": "string", "description": "生成者标识（agent/skill 名称）" },
+            "pipeline": { "type": "string", "description": "流水线名称，如 music-video" },
+            "tool_versions": {
+              "type": "object",
+              "description": "参与工具的版本映射，如 {\"ass_parser\": \"0.1.0\"}",
+              "additionalProperties": { "type": "string" }
+            },
+            "seed_policy": { "type": "string", "description": "视频生成 seed 策略描述" }
+          }
+        }
+      }
+    },
+    "characters": {
+      "type": "array",
+      "description": "人物配置列表",
+      "items": {
+        "type": "object",
+        "required": ["id", "source", "role", "age", "style", "description"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "人物编号（人物库编号或custom）"
+          },
+          "source": {
+            "type": "string",
+            "description": "人物来源",
+            "enum": ["人物库", "自定义"]
+          },
+          "role": {
+            "type": "string",
+            "description": "角色",
+            "enum": ["女主", "男主"]
+          },
+          "age": {
+            "type": "string",
+            "description": "年龄估计"
+          },
+          "style": {
+            "type": "string",
+            "description": "人物形象风格"
+          },
+          "description": {
+            "type": "string",
+            "description": "形象描述摘要（用于Seedance prompt的关键视觉特征）"
+          },
+          "details": {
+            "type": "object",
+            "description": "详细形象信息",
+            "properties": {
+              "hair": { "type": "string", "description": "发型" },
+              "top": { "type": "string", "description": "上装" },
+              "coat": { "type": "string", "description": "外套" },
+              "bottom": { "type": "string", "description": "下装" },
+              "shoes": { "type": "string", "description": "鞋子" },
+              "accessories": { "type": "string", "description": "饰品" }
+            }
+          }
+        }
+      }
+    },
+    "songSections": {
+      "type": "array",
+      "description": "歌曲段落结构",
+      "items": {
+        "type": "object",
+        "required": ["type", "start", "end", "duration"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "段落类型",
+            "enum": ["intro", "verseA", "verseB", "preChorus", "chorus", "bridge", "interlude", "outro"]
+          },
+          "typeName": {
+            "type": "string",
+            "description": "段落中文名",
+            "enum": ["前奏", "主歌A", "主歌B", "预副歌", "副歌", "桥段", "间奏", "尾奏"]
+          },
+          "start": {
+            "type": "number",
+            "description": "起始时间（秒）"
+          },
+          "end": {
+            "type": "number",
+            "description": "结束时间（秒）"
+          },
+          "duration": {
+            "type": "number",
+            "description": "时长（秒）"
+          },
+          "singer": {
+            "type": "string",
+            "description": "主要歌手",
+            "enum": ["男", "女", "合", "无"]
+          }
+        }
+      }
+    },
+    "shots": {
+      "type": "array",
+      "description": "分镜列表（≤23 个，原文字约束落为硬约束）",
+      "minItems": 1,
+      "maxItems": 23,
+      "items": {
+        "type": "object",
+        "required": ["shotNumber", "name", "startTime", "endTime", "duration", "lyrics", "singer", "songSection", "shotType", "shotSize", "cameraAngle", "cameraMovement", "sceneDescription", "characterAction", "colorTone", "lighting", "emotionalAtmosphere", "pacing", "transition", "seedancePrompt"],
+        "properties": {
+          "shotNumber": {
+            "type": "integer",
+            "description": "分镜编号",
+            "minimum": 1
+          },
+          "name": {
+            "type": "string",
+            "description": "场景名称"
+          },
+          "startTime": {
+            "type": "string",
+            "description": "起始时间戳（H:MM:SS.cs格式）"
+          },
+          "endTime": {
+            "type": "string",
+            "description": "结束时间戳（H:MM:SS.cs格式）"
+          },
+          "duration": {
+            "type": "integer",
+            "description": "时长（整数秒，Seedance 生成约束 4-15 秒）",
+            "minimum": 4,
+            "maximum": 15
+          },
+          "lyrics": {
+            "type": "string",
+            "description": "对应歌词文本（纯文本，无karaoke标签）"
+          },
+          "singer": {
+            "type": "string",
+            "description": "歌手",
+            "enum": ["男", "女", "合", "无"]
+          },
+          "songSection": {
+            "type": "string",
+            "description": "歌曲段落",
+            "enum": ["前奏", "主歌A", "主歌B", "预副歌", "副歌", "桥段", "间奏", "尾奏"]
+          },
+          "shotType": {
+            "type": "string",
+            "description": "镜头类型",
+            "enum": ["空镜", "人物镜", "双人镜"]
+          },
+          "character": {
+            "type": "string",
+            "description": "人物编号或描述（空镜时为'无'）"
+          },
+          "shotSize": {
+            "type": "string",
+            "description": "景别",
+            "enum": ["大远景", "远景", "全景", "中景", "近景", "特写", "大特写"]
+          },
+          "cameraAngle": {
+            "type": "string",
+            "description": "拍摄角度",
+            "enum": ["平视", "仰视", "俯视", "鸟瞰", "荷兰角"]
+          },
+          "cameraMovement": {
+            "type": "string",
+            "description": "运镜方式",
+            "enum": ["固定", "推", "拉", "摇", "移", "跟", "升降", "环绕", "手持", "一镜到底", "缓慢推进", "快速推进"]
+          },
+          "sceneDescription": {
+            "type": "string",
+            "description": "场景描述（环境、天气、时间、氛围）"
+          },
+          "characterAction": {
+            "type": "string",
+            "description": "人物动作和表情（空镜时为'无'）"
+          },
+          "colorTone": {
+            "type": "string",
+            "description": "色调"
+          },
+          "lighting": {
+            "type": "string",
+            "description": "光影描述"
+          },
+          "emotionalAtmosphere": {
+            "type": "string",
+            "description": "情绪氛围"
+          },
+          "pacing": {
+            "type": "string",
+            "description": "节奏",
+            "enum": ["快切", "慢镜头", "正常", "延时", "慢动作"]
+          },
+          "transition": {
+            "type": "string",
+            "description": "与下一镜的转场方式",
+            "enum": ["硬切", "叠化", "闪白", "黑场", "匹配剪辑", "无（最后一镜）"]
+          },
+          "seedancePrompt": {
+            "type": "string",
+            "description": "Seedance平台优化prompt（中文）"
+          },
+          "assetPath": {
+            "type": ["string", "null"],
+            "description": "assets 阶段回填的生成视频路径（M8 增补，可空）"
+          },
+          "referenceImages": {
+            "type": ["array", "null"],
+            "description": "人物参考图路径列表（M4 人物一致性增强，可空）",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}

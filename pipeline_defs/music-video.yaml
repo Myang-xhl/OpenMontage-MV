@@ -1,0 +1,186 @@
+name: music-video
+version: "1.0"
+description: >
+  Music-video pipeline driven by an ASS karaoke lyric file. Ports the mv-storyboard
+  skill (7-step storyboard generator) into a full production pipeline: parse lyrics,
+  analyze song structure, match narrative style and characters, orchestrate an
+  18-dimension storyboard with Seedance-optimized prompts (max 23 shots, integer
+  4-15s each), then extend into asset generation, timeline edit, compose with the
+  original song audio plus ASS karaoke subtitle burn-in, and delivery. Supports
+  storyboard-only delivery (stop after the storyboard stage) when the user just
+  wants the shot script or no song audio is available.
+category: music_video
+stability: beta
+default_checkpoint_policy: guided
+
+extensions:
+  custom_scripts: true
+  custom_playbooks: true
+  custom_skills: true
+  custom_tools: false
+
+required_skills:
+  - pipelines/music-video/idea-director
+  - pipelines/music-video/proposal-director
+  - pipelines/music-video/storyboard-director
+  - pipelines/music-video/asset-director
+  - pipelines/music-video/edit-director
+  - pipelines/music-video/compose-director
+  - pipelines/music-video/publish-director
+  - meta/reviewer
+  - meta/checkpoint-protocol
+
+compatible_playbooks:
+  custom_allowed: true
+
+stages:
+  - name: idea
+    skill: pipelines/music-video/idea-director
+    produces:
+      - brief
+    tools_available:
+      - ass_parser
+    checkpoint_required: true
+    human_approval_default: false
+    review_focus:
+      - ASS file decoded with correct encoding (no garbled lyrics)
+      - Lyrics complete with no karaoke/override tag residue
+      - Song section structure grounded in the three signals (gaps, repetition, singer changes)
+      - Song style and emotional tone judgments cite lyric evidence
+    success_criteria:
+      - Schema-valid brief artifact
+      - ass_parser output captured (line count, total duration, singers, gaps)
+      - Section map covers the full song duration
+
+  - name: proposal
+    skill: pipelines/music-video/proposal-director
+    required_artifacts_in:
+      - brief
+    produces:
+      - proposal_packet
+      - decision_log
+    tools_available: []
+    checkpoint_required: true
+    human_approval_default: false
+    review_focus:
+      - Narrative style match is justified by song structure and lyric evidence
+      - Character matches cite the character library "适配歌曲风格" fields
+      - Music plan is resolved (song audio source confirmed, or delivery downgraded to storyboard-only with explicit note)
+      - yinghe_video availability is confirmed and recorded in decision_log
+      - Delivery shape (storyboard-only vs full MV) is explicit
+    success_criteria:
+      - Schema-valid proposal_packet artifact
+      - decision_log includes provider selection and render_runtime_selection (ffmpeg) entries
+      - Music plan resolved or storyboard-only downgrade recorded
+
+  - name: storyboard
+    skill: pipelines/music-video/storyboard-director
+    required_artifacts_in:
+      - brief
+      - proposal_packet
+    produces:
+      - storyboard
+    tools_available: []
+    checkpoint_required: true
+    human_approval_default: false
+    review_focus:
+      - At most 23 shots, each an integer 4-15 seconds
+      - Shot timeline covers the song continuously with no gaps or overlaps
+      - Every seedancePrompt passes the eight-element self-check
+      - One camera movement per shot (never stacked)
+      - Mandatory constraint packs appended to every prompt (quality, stability, no-subtitles, no-watermark; twin-guard for two-person shots)
+      - Character outfits consistent within the same scene
+      - Empty shots (空镜) serve the narrative, not filler
+    success_criteria:
+      - Schema-valid storyboard artifact (schema enforces shot count and duration bounds)
+      - Both output formats written (storyboard.json + markdown per storyboard-template)
+      - Self-check checklist from SKILL.md completed item by item
+
+  - name: assets
+    skill: pipelines/music-video/asset-director
+    required_artifacts_in:
+      - storyboard
+    optional_artifacts_in:
+      - proposal_packet
+    produces:
+      - asset_manifest
+    tools_available:
+      - yinghe_video
+    checkpoint_required: true
+    human_approval_default: false
+    review_focus:
+      - Every generated clip duration matches its storyboard shot duration
+      - Character consistency held across shots (reference images bound when available)
+      - Actions stay low-intensity and continuous per the Seedance action rules
+      - partial_progress refreshed after every shot
+    success_criteria:
+      - Schema-valid asset_manifest artifact
+      - All referenced clip files exist on disk
+      - storyboard shots updated with assetPath for every generated clip
+
+  - name: edit
+    skill: pipelines/music-video/edit-director
+    required_artifacts_in:
+      - storyboard
+      - asset_manifest
+    produces:
+      - edit_decisions
+    tools_available: []
+    checkpoint_required: true
+    human_approval_default: false
+    review_focus:
+      - Clips arranged exactly on the storyboard timeline
+      - Song audio track aligned to the lyric timestamps
+      - Subtitle plan confirmed (ASS karaoke burn-in at compose)
+    success_criteria:
+      - Schema-valid edit_decisions artifact
+      - Edit decisions cover the full song duration
+
+  - name: compose
+    skill: pipelines/music-video/compose-director
+    required_artifacts_in:
+      - edit_decisions
+      - asset_manifest
+    optional_artifacts_in:
+      - storyboard
+    produces:
+      - render_report
+      - final_review
+    required_tools:
+      - video_stitch
+      - audio_mixer
+    optional_tools:
+      - color_grade
+    tools_available:
+      - video_stitch
+      - audio_mixer
+      - color_grade
+    checkpoint_required: true
+    human_approval_default: false
+    review_focus:
+      - Final runtime equals the song duration
+      - Audio and visuals stay in sync across every shot boundary
+      - ASS karaoke subtitles burned in correctly (original timing preserved)
+      - Assembly is ffmpeg-led end to end (video_stitch + audio_mixer + ASS burn-in)
+    success_criteria:
+      - Schema-valid render_report artifact
+      - Output file exists and passes ffprobe validation
+
+  - name: publish
+    skill: pipelines/music-video/publish-director
+    required_artifacts_in:
+      - render_report
+      - final_review
+    optional_artifacts_in:
+      - storyboard
+    produces:
+      - publish_log
+    tools_available: []
+    checkpoint_required: true
+    human_approval_default: false
+    review_focus:
+      - Delivery package complete (final MV + storyboard markdown + storyboard.json)
+      - Metadata matches the song and narrative style
+    success_criteria:
+      - Schema-valid publish_log artifact
+      - Export package contains video, storyboard markdown, and storyboard JSON

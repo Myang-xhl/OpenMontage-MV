@@ -1,0 +1,8 @@
+schema_version: 1
+module_path: schemas
+title: OpenMontage 数据契约与 JSON Schema 定义
+scope:
+    - schemas/
+source_files: []
+depends_on: []
+related_to: []

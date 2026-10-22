@@ -1,0 +1,8 @@
+schema_version: 1
+module_path: media_tools
+title: 媒体处理工具集与工具注册中心
+scope:
+    - tools/
+source_files: []
+depends_on: []
+related_to: []

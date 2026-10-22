@@ -1,0 +1,8 @@
+schema_version: 1
+module_path: backlot_app
+title: Backlot 管线可视化与 Studio 工作台
+scope:
+    - backlot/
+source_files: []
+depends_on: []
+related_to: []

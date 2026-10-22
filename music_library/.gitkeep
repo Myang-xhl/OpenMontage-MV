@@ -1,0 +1,2 @@
+# Drop the song audio here (mp3/wav/flac). The proposal stage checks this folder
+# via the music_library tool before asking you for an audio path.

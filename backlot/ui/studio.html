@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Backlot — Studio</title>
+<link rel="stylesheet" href="/ui/board.css">
+<link rel="stylesheet" href="/ui/studio.css">
+</head>
+<body>
+<div class="studio">
+
+  <!-- Session sidebar -->
+  <aside class="st-sessions" id="sessionRail">
+    <div class="st-sessions-head">
+      <span class="wordmark">Sessions</span>
+      <button class="st-btn st-btn-amber" id="newSessionBtn" title="New session">＋ New</button>
+    </div>
+    <label class="st-mode-toggle" title="New sessions: require approval for bash / file writes">
+      <input type="checkbox" id="confirmMode"> confirm mode
+    </label>
+    <div class="st-session-list" id="sessionList"></div>
+    <a class="st-lib-link" href="/">← Library</a>
+  </aside>
+
+  <!-- Chat column -->
+  <main class="st-chat">
+    <header class="slate st-slate">
+      <div class="clapper"></div>
+      <div>
+        <span class="wordmark">Backlot</span>
+        <h1>Studio</h1>
+      </div>
+      <span class="chip" id="sessionChip"></span>
+      <div class="spacer"></div>
+      <span class="live idle" id="stateBadge"><span class="dot"></span><span id="stateText">IDLE</span></span>
+    </header>
+
+    <div class="st-messages" id="messages">
+      <div class="st-welcome" id="welcome">
+        <p>Tell the studio agent what to produce — it reads <code>AGENT_GUIDE.md</code>,
+        picks a pipeline, and drives the production. The board on the right follows
+        the project it creates.</p>
+        <p class="hint">e.g. “给我做一个 30 秒的黑洞讲解视频”</p>
+      </div>
+    </div>
+
+    <div class="st-todos" id="todoStrip" style="display:none">
+      <div class="st-todos-head">PLAN</div>
+      <ul id="todoList"></ul>
+    </div>
+
+    <div class="st-composer">
+      <textarea id="input" rows="2" placeholder="Message the studio agent…  (Enter to send, Shift+Enter for newline)"></textarea>
+      <div class="st-composer-btns">
+        <button class="st-btn st-btn-red" id="interruptBtn" style="display:none">■ Stop</button>
+        <button class="st-btn st-btn-amber" id="sendBtn">Send</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Board panel -->
+  <section class="st-board">
+    <div class="st-board-bar">
+      <span class="wordmark">Board</span>
+      <select id="projectSelect"><option value="">— no project —</option></select>
+      <a id="previewOpen" class="st-board-open" href="#" target="_blank" style="display:none">▶ preview</a>
+      <a id="boardOpen" class="st-board-open" href="#" target="_blank" style="display:none">open ↗</a>
+    </div>
+    <div class="st-board-frame">
+      <iframe id="boardFrame" title="project board"></iframe>
+      <div class="st-board-empty" id="boardEmpty">
+        <p>No project yet.</p>
+        <p class="hint">The board loads automatically when the agent creates or touches a project.</p>
+      </div>
+    </div>
+  </section>
+
+</div>
+<script type="module" src="/ui/studio.js"></script>
+</body>
+</html>

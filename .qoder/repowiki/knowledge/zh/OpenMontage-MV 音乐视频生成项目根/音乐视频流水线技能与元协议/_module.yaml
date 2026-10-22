@@ -1,0 +1,8 @@
+schema_version: 1
+module_path: skills
+title: 音乐视频流水线技能与元协议
+scope:
+    - skills/
+source_files: []
+depends_on: []
+related_to: []

@@ -1,0 +1,105 @@
+# 知识卡导出索引文件
+schema_version: 1
+locale: zh-CN
+branch: Q0DeR-MaG1C-BrAnCh-Fo2-NoN-GiT-Or-No-C0MmIt
+nodes_managed: true
+exported_at: "2026-08-03T03:43:56Z"
+modules:
+    "":
+        dir_name: OpenMontage-MV 音乐视频生成项目根
+        title: OpenMontage-MV 音乐视频生成项目根
+        scope:
+            - AGENTS.md
+            - AGENT_GUIDE.md
+            - config.yaml
+            - requirements.txt
+            - .gitignore
+        source_files: []
+        children:
+            - agent_skills
+            - backlot_app
+            - media_tools
+            - schemas
+            - shared_lib
+            - skills
+            - support_dirs
+        depends_on: []
+        related_to: []
+    agent_skills:
+        dir_name: Agent Skills（Layer 3 技能目录）
+        title: Agent Skills（Layer 3 技能目录）
+        scope:
+            - .agents/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to: []
+    backlot_app:
+        dir_name: Backlot 管线可视化与 Studio 工作台
+        title: Backlot 管线可视化与 Studio 工作台
+        scope:
+            - backlot/
+        source_files: []
+        children:
+            - backlot_app/server_runtime
+        depends_on: []
+        related_to: []
+    backlot_app/server_runtime:
+        dir_name: Backlot 服务器运行时与状态推导
+        title: Backlot 服务器运行时与状态推导
+        scope:
+            - backlot/server.py
+            - backlot/state.py
+            - backlot/__main__.py
+        source_files: []
+        children: []
+        depends_on: []
+        related_to: []
+    media_tools:
+        dir_name: 媒体处理工具集与工具注册中心
+        title: 媒体处理工具集与工具注册中心
+        scope:
+            - tools/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to: []
+    schemas:
+        dir_name: OpenMontage 数据契约与 JSON Schema 定义
+        title: OpenMontage 数据契约与 JSON Schema 定义
+        scope:
+            - schemas/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to: []
+    shared_lib:
+        dir_name: OpenMontage 共享基础库（配置、路径、流水线、检查点、事件与媒体配置）
+        title: OpenMontage 共享基础库（配置、路径、流水线、检查点、事件与媒体配置）
+        scope:
+            - lib/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to: []
+    skills:
+        dir_name: 音乐视频流水线技能与元协议
+        title: 音乐视频流水线技能与元协议
+        scope:
+            - skills/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to: []
+    support_dirs:
+        dir_name: 音乐视频流水线定义与资源目录
+        title: 音乐视频流水线定义与资源目录
+        scope:
+            - character_library/
+            - music_library/
+            - pipeline_defs/
+            - tests/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to: []

@@ -1,0 +1,8 @@
+schema_version: 1
+module_path: shared_lib
+title: OpenMontage 共享基础库（配置、路径、流水线、检查点、事件与媒体配置）
+scope:
+    - lib/
+source_files: []
+depends_on: []
+related_to: []

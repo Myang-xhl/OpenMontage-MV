@@ -1,0 +1,11 @@
+schema_version: 1
+module_path: support_dirs
+title: 音乐视频流水线定义与资源目录
+scope:
+    - character_library/
+    - music_library/
+    - pipeline_defs/
+    - tests/
+source_files: []
+depends_on: []
+related_to: []

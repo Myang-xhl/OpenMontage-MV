@@ -1,0 +1,12 @@
+schema_version: 1
+module_path: ""
+title: OpenMontage-MV 音乐视频生成项目根
+scope:
+    - AGENTS.md
+    - AGENT_GUIDE.md
+    - config.yaml
+    - requirements.txt
+    - .gitignore
+source_files: []
+depends_on: []
+related_to: []

@@ -1,0 +1,44 @@
+"""Artifact schema loading and validation utilities."""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
+from typing import Any
+
+import jsonschema
+
+SCHEMA_DIR = Path(__file__).parent
+
+ARTIFACT_NAMES = [
+    "proposal_packet",
+    "brief",
+    "storyboard",
+    "asset_manifest",
+    "edit_decisions",
+    "render_report",
+    "publish_log",
+    "review",
+    "decision_log",
+    "final_review",
+]
+
+
+def load_schema(name: str) -> dict:
+    """Load a JSON schema by artifact name."""
+    path = SCHEMA_DIR / f"{name}.schema.json"
+    if not path.exists():
+        raise FileNotFoundError(f"Schema not found: {path}")
+    with open(path, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def validate_artifact(name: str, data: dict[str, Any]) -> None:
+    """Validate artifact data against its schema. Raises on failure."""
+    schema = load_schema(name)
+    jsonschema.validate(instance=data, schema=schema)
+
+
+def list_schemas() -> list[str]:
+    """List all available artifact schema names."""
+    return [p.stem.replace(".schema", "") for p in SCHEMA_DIR.glob("*.schema.json")]
